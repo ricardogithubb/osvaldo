@@ -291,6 +291,7 @@ const mostrarRegistros = (registros) => {
             <td>${reg.veiculo || ''}</td>
             <td><span class="badge bg-primary rounded-pill">${reg.quantidade || 0}</span></td>
             <td>${reg.motorista || ''}</td>
+            <td>${reg.observacoes || ''}</td>
             <td class="text-end">
                 <button class="btn btn-sm btn-outline-primary me-1" onclick="editarRegistro(${reg.id})">
                     <i class="bi bi-pencil"></i>
