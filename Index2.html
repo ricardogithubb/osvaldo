@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bíblia Online - Leitura Sagrada</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Open+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #8B4513;
+            --secondary-color: #D4A76A;
+            --dark-color: #1a1a1a;
+            --light-color: #f8f5f0;
+            --accent-color: #5a3921;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--light-color);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--dark-color), var(--primary-color));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-weight: 300;
+            opacity: 0.9;
+            font-size: 1.1rem;
+            margin-bottom: 0;
+        }
+        
+        .book-container {
+            padding: 2rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            font-family: 'Cinzel', serif;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0d6c9;
+            font-size: 1.8rem;
+        }
+        
+        .book-btn {
+            width: 120px;
+            height: 120px;
+            margin: 0.7rem;
+            border: none;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+        }
+        
+        .book-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            background-color: #f9f5ef;
+        }
+        
+        .book-btn.active {
+            background-color: var(--secondary-color);
+            box-shadow: 0 8px 15px rgba(139, 69, 19, 0.2);
+        }
+        
+        .book-abbr {
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            line-height: 1;
+        }
+        
+        .book-name {
+            font-size: 0.75rem;
+            color: #555;
+            text-align: center;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+        
+        .book-btn.active .book-abbr {
+            color: var(--accent-color);
+        }
+        
+        .book-btn.active .book-name {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .bible-display {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-top: 2rem;
+            min-height: 500px;
+            border-left: 5px solid var(--secondary-color);
+        }
+        
+        .book-title {
+            font-family: 'Cinzel', serif;
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .chapter-title {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .verse {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        .verse-number {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            vertical-align: super;
+            margin-right: 3px;
+        }
+        
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .chapter-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .chapter-btn:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+        
+        .chapter-selector {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        .testament-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .testament-btn {
+            background-color: #f1e9dd;
+            color: #666;
+            border: none;
+            padding: 0.6rem 1.8rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .testament-btn:first-child {
+            border-radius: 5px 0 0 5px;
+        }
+        
+        .testament-btn:last-child {
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .testament-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: #ccc;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            text-align: center;
+        }
+        
+        .footer-logo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            .book-btn {
+                width: 100px;
+                height: 100px;
+                margin: 0.5rem;
+            }
+            
+            .book-abbr {
+                font-size: 2rem;
+            }
+            
+            .book-name {
+                font-size: 0.7rem;
+            }
+            
+            .bible-display {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .book-btn {
+                width: 85px;
+                height: 85px;
+                margin: 0.4rem;
+            }
+            
+            .book-abbr {
+                font-size: 1.7rem;
+            }
+            
+            .book-name {
+                font-size: 0.65rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Bíblia Sagrada</h1>
+            <p class="subtitle">Leitura online dos textos sagrados</p>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="container">
+        <!-- Seletor de Testamentos -->
+        <div class="testament-selector">
+            <button class="testament-btn active" id="old-testament-btn">Antigo Testamento</button>
+            <button class="testament-btn" id="new-testament-btn">Novo Testamento</button>
+        </div>
+        
+        <!-- Livros do Antigo Testamento -->
+        <div class="book-container" id="old-testament">
+            <h2 class="section-title">Antigo Testamento</h2>
+            <div class="row justify-content-center" id="old-testament-books">
+                <!-- Livros serão inseridos via JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Livros do Novo Testamento -->
+        <div class="book-container d-none" id="new-testament">
+            <h2 class="section-title">Novo Testamento</h2>
+            <div class="row justify-content-center" id="new-testament-books">
+                <!-- Livros serão inseridos via JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Exibição da Bíblia -->
+        <div class="bible-display">
+            <div class="chapter-nav">
+                <button class="chapter-btn" id="prev-chapter"><i class="fas fa-chevron-left"></i> Capítulo Anterior</button>
+                <div class="chapter-selector">
+                    <span id="current-book">Gênesis</span> - Capítulo <span id="current-chapter">1</span>
+                </div>
+                <button class="chapter-btn" id="next-chapter">Próximo Capítulo <i class="fas fa-chevron-right"></i></button>
+            </div>
+            
+            <h2 class="book-title" id="display-book-title">Gênesis</h2>
+            <h3 class="chapter-title" id="display-chapter-title">Capítulo 1</h3>
+            
+            <div class="bible-text" id="bible-text">
+                <!-- Texto bíblico será inserido via JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-logo">Bíblia Online</div>
+            <p>Uma interface elegante para leitura dos textos sagrados</p>
+            <p class="copyright">© 2023 Bíblia Online. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS e Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+        // Dados dos livros da Bíblia
+        const bibleBooks = {
+            oldTestament: [
+                {abbr: "GN", name: "Gênesis", chapters: 50},
+                {abbr: "EX", name: "Êxodo", chapters: 40},
+                {abbr: "LV", name: "Levítico", chapters: 27},
+                {abbr: "NM", name: "Números", chapters: 36},
+                {abbr: "DT", name: "Deuteronômio", chapters: 34},
+                {abbr: "JS", name: "Josué", chapters: 24},
+                {abbr: "JZ", name: "Juízes", chapters: 21},
+                {abbr: "RT", name: "Rute", chapters: 4},
+                {abbr: "1SM", name: "1 Samuel", chapters: 31},
+                {abbr: "2SM", name: "2 Samuel", chapters: 24},
+                {abbr: "1RS", name: "1 Reis", chapters: 22},
+                {abbr: "2RS", name: "2 Reis", chapters: 25},
+                {abbr: "1CR", name: "1 Crônicas", chapters: 29},
+                {abbr: "2CR", name: "2 Crônicas", chapters: 36},
+                {abbr: "ED", name: "Esdras", chapters: 10},
+                {abbr: "NE", name: "Neemias", chapters: 13},
+                {abbr: "ET", name: "Ester", chapters: 10},
+                {abbr: "JÓ", name: "Jó", chapters: 42},
+                {abbr: "SL", name: "Salmos", chapters: 150},
+                {abbr: "PV", name: "Provérbios", chapters: 31},
+                {abbr: "EC", name: "Eclesiastes", chapters: 12},
+                {abbr: "CT", name: "Cânticos", chapters: 8},
+                {abbr: "IS", name: "Isaías", chapters: 66},
+                {abbr: "JR", name: "Jeremias", chapters: 52},
+                {abbr: "LM", name: "Lamentações", chapters: 5},
+                {abbr: "EZ", name: "Ezequiel", chapters: 48},
+                {abbr: "DN", name: "Daniel", chapters: 12},
+                {abbr: "OS", name: "Oséias", chapters: 14},
+                {abbr: "JL", name: "Joel", chapters: 3},
+                {abbr: "AM", name: "Amós", chapters: 9},
+                {abbr: "OB", name: "Obadias", chapters: 1},
+                {abbr: "JN", name: "Jonas", chapters: 4},
+                {abbr: "MQ", name: "Miquéias", chapters: 7},
+                {abbr: "NA", name: "Naum", chapters: 3},
+                {abbr: "HC", name: "Habacuque", chapters: 3},
+                {abbr: "SF", name: "Sofonias", chapters: 3},
+                {abbr: "AG", name: "Ageu", chapters: 2},
+                {abbr: "ZC", name: "Zacarias", chapters: 14},
+                {abbr: "ML", name: "Malaquias", chapters: 4}
+            ],
+            newTestament: [
+                {abbr: "MT", name: "Mateus", chapters: 28},
+                {abbr: "MC", name: "Marcos", chapters: 16},
+                {abbr: "LC", name: "Lucas", chapters: 24},
+                {abbr: "JO", name: "João", chapters: 21},
+                {abbr: "AT", name: "Atos", chapters: 28},
+                {abbr: "RM", name: "Romanos", chapters: 16},
+                {abbr: "1CO", name: "1 Coríntios", chapters: 16},
+                {abbr: "2CO", name: "2 Coríntios", chapters: 13},
+                {abbr: "GL", name: "Gálatas", chapters: 6},
+                {abbr: "EF", name: "Efésios", chapters: 6},
+                {abbr: "FP", name: "Filipenses", chapters: 4},
+                {abbr: "CL", name: "Colossenses", chapters: 4},
+                {abbr: "1TS", name: "1 Tessalonicenses", chapters: 5},
+                {abbr: "2TS", name: "2 Tessalonicenses", chapters: 3},
+                {abbr: "1TM", name: "1 Timóteo", chapters: 6},
+                {abbr: "2TM", name: "2 Timóteo", chapters: 4},
+                {abbr: "TT", name: "Tito", chapters: 3},
+                {abbr: "FM", name: "Filemom", chapters: 1},
+                {abbr: "HB", name: "Hebreus", chapters: 13},
+                {abbr: "TG", name: "Tiago", chapters: 5},
+                {abbr: "1PE", name: "1 Pedro", chapters: 5},
+                {abbr: "2PE", name: "2 Pedro", chapters: 3},
+                {abbr: "1JO", name: "1 João", chapters: 5},
+                {abbr: "2JO", name: "2 João", chapters: 1},
+                {abbr: "3JO", name: "3 João", chapters: 1},
+                {abbr: "JD", name: "Judas", chapters: 1},
+                {abbr: "AP", name: "Apocalipse", chapters: 22}
+            ]
+        };
+
+        // Estado atual da aplicação
+        let currentState = {
+            testament: "oldTestament",
+            bookIndex: 0,
+            chapter: 1,
+            bookName: "Gênesis",
+            bookAbbr: "GN",
+            totalChapters: 50
+        };
+
+        // Inicializar a aplicação
+        $(document).ready(function() {
+            renderBooks();
+            renderBibleText();
+            
+            // Evento para trocar entre testamentos
+            $("#old-testament-btn").click(function() {
+                $(".testament-btn").removeClass("active");
+                $(this).addClass("active");
+                $("#old-testament").removeClass("d-none");
+                $("#new-testament").addClass("d-none");
+                currentState.testament = "oldTestament";
+                updateActiveBook();
+            });
+            
+            $("#new-testament-btn").click(function() {
+                $(".testament-btn").removeClass("active");
+                $(this).addClass("active");
+                $("#old-testament").addClass("d-none");
+                $("#new-testament").removeClass("d-none");
+                currentState.testament = "newTestament";
+                updateActiveBook();
+            });
+            
+            // Evento para navegação entre capítulos
+            $("#prev-chapter").click(function() {
+                if (currentState.chapter > 1) {
+                    currentState.chapter--;
+                    renderBibleText();
+                }
+            });
+            
+            $("#next-chapter").click(function() {
+                if (currentState.chapter < currentState.totalChapters) {
+                    currentState.chapter++;
+                    renderBibleText();
+                }
+            });
+        });
+
+        // Renderizar os botões dos livros
+        function renderBooks() {
+            // Antigo Testamento
+            const oldTestamentContainer = $("#old-testament-books");
+            bibleBooks.oldTestament.forEach((book, index) => {
+                const bookElement = `
+                    <div class="col-auto">
+                        <div class="book-btn ${index === 0 ? 'active' : ''}" data-testament="oldTestament" data-index="${index}">
+                            <div class="book-abbr">${book.abbr}</div>
+                            <div class="book-name">${book.name}</div>
+                        </div>
+                    </div>
+                `;
+                oldTestamentContainer.append(bookElement);
+            });
+            
+            // Novo Testamento
+            const newTestamentContainer = $("#new-testament-books");
+            bibleBooks.newTestament.forEach((book, index) => {
+                const bookElement = `
+                    <div class="col-auto">
+                        <div class="book-btn" data-testament="newTestament" data-index="${index}">
+                            <div class="book-abbr">${book.abbr}</div>
+                            <div class="book-name">${book.name}</div>
+                        </div>
+                    </div>
+                `;
+                newTestamentContainer.append(bookElement);
+            });
+            
+            // Adicionar evento de clique aos botões dos livros
+            $(".book-btn").click(function() {
+                const testament = $(this).data("testament");
+                const index = $(this).data("index");
+                
+                // Atualizar estado
+                currentState.testament = testament;
+                currentState.bookIndex = index;
+                currentState.bookName = bibleBooks[testament][index].name;
+                currentState.bookAbbr = bibleBooks[testament][index].abbr;
+                currentState.totalChapters = bibleBooks[testament][index].chapters;
+                currentState.chapter = 1;
+                
+                // Atualizar interface
+                updateActiveBook();
+                renderBibleText();
+                
+                // Se clicou em um livro do Novo Testamento, mudar para essa seção
+                if (testament === "newTestament") {
+                    $("#new-testament-btn").click();
+                } else {
+                    $("#old-testament-btn").click();
+                }
+            });
+        }
+
+        // Atualizar o livro ativo
+        function updateActiveBook() {
+            // Remover classe active de todos os botões
+            $(".book-btn").removeClass("active");
+            
+            // Adicionar classe active ao botão correto
+            $(`.book-btn[data-testament="${currentState.testament}"][data-index="${currentState.bookIndex}"]`).addClass("active");
+        }
+
+        // Renderizar o texto bíblico
+        function renderBibleText() {
+            // Atualizar informações do capítulo atual
+            $("#current-book").text(currentState.bookName);
+            $("#current-chapter").text(currentState.chapter);
+            $("#display-book-title").text(currentState.bookName);
+            $("#display-chapter-title").text(`Capítulo ${currentState.chapter}`);
+            
+            // Gerar texto de exemplo (em uma implementação real, aqui viria de uma API)
+            const bibleTextContainer = $("#bible-text");
+            bibleTextContainer.empty();
+            
+            // Determinar quantos versículos neste capítulo (exemplo)
+            const vers
