@@ -548,4 +548,27 @@
             bibleTextContainer.empty();
             
             // Determinar quantos versículos neste capítulo (exemplo)
-            const vers
+            const versesInChapter = currentState.chapter % 5 + 15; // Apenas para exemplo
+            
+            for (let i = 1; i <= versesInChapter; i++) {
+                const verseElement = `
+                    <div class="verse">
+                        <span class="verse-number">${i}</span>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+                    </div>
+                `;
+                bibleTextContainer.append(verseElement);
+            }
+            
+            // Atualizar estado dos botões de navegação
+            $("#prev-chapter").prop("disabled", currentState.chapter === 1);
+            $("#next-chapter").prop("disabled", currentState.chapter === currentState.totalChapters);
+            
+            // Adicionar efeito sutil de transição
+            bibleTextContainer.hide().fadeIn(300);
+        }
+    </script>
+</body>
+</html>
